@@ -195,7 +195,10 @@
                 "parameters": [
                     {
                         "name": "Authorization",
-                        "in": "header"
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
