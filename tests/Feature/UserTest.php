@@ -192,7 +192,7 @@ class UserTest extends TestCase
                 'password' => 'ezapratama123'
             ],
             [
-                'authorization' => 'testToken'
+                'Authorization' => 'testToken'
             ]
         )->assertStatus(200)
             ->assertJson([
@@ -211,6 +211,35 @@ class UserTest extends TestCase
         $this->seed([UserSeeder::class]);
         $this->patch('/api/users/current', [
             'name' => 'ardyezapratama'
+        ])->assertStatus(401)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'unauthorized'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testLogoutSuccess(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $this->delete(uri: '/api/users/logout', headers: [
+            'Authorization' => 'testToken'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => true
+            ]);
+
+        $user = User::where('username', 'ezapratama')->first();
+        self::assertNull($user->token);
+    }
+
+    public function testLogoutFailed(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $this->delete(uri: '/api/users/logout', headers: [
+            'Authorization' => 'tokenSalah'
         ])->assertStatus(401)
             ->assertJson([
                 'errors' => [
