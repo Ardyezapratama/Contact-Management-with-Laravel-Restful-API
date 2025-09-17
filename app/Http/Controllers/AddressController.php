@@ -93,4 +93,13 @@ class AddressController extends Controller
         ])->setStatusCode(200);
 
     }
+
+    public function list(int $idContact): JsonResponse
+    {
+        $user = Auth::user();
+        $contact = $this->getContact($user, $idContact);
+
+        $address = Address::where('contact_id', $contact->id)->get();
+        return AddressResource::collection($address)->response()->setStatusCode(200);
+    }
 }
